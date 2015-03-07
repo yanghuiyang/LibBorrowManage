@@ -1,18 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-   xmlns:context="http://www.springframework.org/schema/context"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="
-   http://www.springframework.org/schema/beans     
-   http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-   http://www.springframework.org/schema/context 
-   http://www.springframework.org/schema/context/spring-context-3.2.xsd">
-
-   <context:component-scan base-package="com.cqu.tutorial"/>
+<beans 
+    xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:jee="http://www.springframework.org/schema/jee" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"  
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx-3.2.xsd 
+        http://www.springframework.org/schema/jee 
+        http://www.springframework.org/schema/jee/spring-jee-3.2.xsd 
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd  
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	
+   <context:annotation-config/>
+   <context:component-scan base-package="com.yang.bishe"/>
    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
      
-      <property name="prefix" value="/WEB-INF/hello/" />
+      <property name="prefix" value="/WEB-INF/" />
       <property name="suffix" value=".jsp" />
    </bean>
+   
+    <!-- 数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/bishe?characterEncoding=UTF-8"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+   
+   	<!-- Hibernate的sessionfactory配置 -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" /><!-- 数据源 -->
+        <property name="hibernateProperties">
+			<props>
+				<!--数据库方言配置，功能：告知hibernate所用的DBMS,然后hibernate会根据具体的DBMS生成优化的SQL语句-->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<prop key="hibernate.show_sql">true</prop><!-- 在日志上是否打印出sql语句 -->
+				<prop key="hibernate.format_sql">true</prop><!-- 先格式化SQL语句，再打印 -->
+				<!-- <prop key="hbm2ddl.auto">create</prop> -->
+				<!-- 事务后关闭连接
+				<prop key="hibernate.connection.release_mode">after_transaction</prop>
+				 -->
+			</props>
+		</property>
+		<property name="packagesToScan" value="com.yang.bishe.entity"/>
+    </bean>
+   
+   <!-- 设定首页 -->
+   <mvc:view-controller path="/" view-name="index"/> 
+   
+   <!-- 配置静态资源，直接映射到对应的文件夹，不被DispatcherServlet处理 -->
+    <mvc:resources mapping="/images/**" location="/images/"/>
+    <mvc:resources mapping="/js/**" location="/js/"/>
+    <mvc:resources mapping="/css/**" location="/css/"/>
+    <mvc:resources mapping="/common/**" location="/common/"/>
 
 </beans>
