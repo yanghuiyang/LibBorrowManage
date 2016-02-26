@@ -2471,17 +2471,20 @@
   margin: 0;
   padding: 0;
   list-style-type: none;
+
 }
 .tree li {
   white-space: nowrap;
+
 }
 .tree li ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
+ 
 }
 .tree-node {
-  height: 18px;
+  height: 25px;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -2496,9 +2499,10 @@
 .tree-indent {
   display: inline-block;
   width: 16px;
-  height: 18px;
+  height: 19px;
   vertical-align: top;
   overflow: hidden;
+  
 }
 .tree-expanded {
   background: url('images/tree_icons.png') no-repeat -18px 0px;
@@ -2563,7 +2567,6 @@
   display: inline-block;
   text-decoration: none;
   vertical-align: top;
-  white-space: nowrap;
   padding: 0 2px;
   height: 18px;
   line-height: 18px;

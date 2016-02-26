@@ -2,7 +2,6 @@
     <wb-module deploy-name="LibBorrowManage">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/config"/>
         <property name="context-root" value="LibBorrowManage"/>
         <property name="java-output-path" value="/LibBorrowManage/build/classes"/>
     </wb-module>

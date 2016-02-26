@@ -20,11 +20,11 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 	
-   <context:annotation-config/>
+   <mvc:annotation-driven/>
    <context:component-scan base-package="com.yang.bishe"/>
    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
      
-      <property name="prefix" value="/WEB-INF/" />
+      <property name="prefix" value="/WEB-INF/views/" />
       <property name="suffix" value=".jsp" />
    </bean>
    
@@ -53,14 +53,40 @@
 		</property>
 		<property name="packagesToScan" value="com.yang.bishe.entity"/>
     </bean>
-   
-   <!-- 设定首页 -->
-   <mvc:view-controller path="/" view-name="index"/> 
-   
+    
+    <!-- 开启AOP监听 只对当前配置文件有效 -->
+    <aop:aspectj-autoproxy expose-proxy="true"/>
+   <!-- 开启注解事务 只对当前配置文件有效 -->
+     <tx:annotation-driven transaction-manager="txManager"/>
+	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="saveOrUpdate*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="grant*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="set*" propagation="REQUIRED" />
+			<tx:method name="*" propagation="REQUIRED" read-only="true" />
+        </tx:attributes>
+    </tx:advice>
+    <aop:config expose-proxy="true">
+        <!-- 只对业务逻辑层实施事务 -->
+        <aop:pointcut id="txPointcut" expression="execution(* com.yang.bishe..service..*.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+    </aop:config>
    <!-- 配置静态资源，直接映射到对应的文件夹，不被DispatcherServlet处理 -->
     <mvc:resources mapping="/images/**" location="/images/"/>
     <mvc:resources mapping="/js/**" location="/js/"/>
-    <mvc:resources mapping="/css/**" location="/css/"/>
-    <mvc:resources mapping="/common/**" location="/common/"/>
-
+    <mvc:resources mapping="/style/**" location="/style/"/>
+ 
+	<mvc:interceptors>  
+	    <mvc:interceptor> 
+	     	<mvc:mapping path="/*"/>   
+	        <bean class="com.yang.bishe.Interceptor.CommonInterceptor" />  
+	    </mvc:interceptor>  
+	</mvc:interceptors>  
 </beans>
